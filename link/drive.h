@@ -1,10 +1,10 @@
 #ifndef _DRIVE_H_
 #define _DRIVE_H_
 
-
+//CHANGE MOTORS TO THE ONES WE USE
 //primary driving code
-#define MOT_LEFT 2//Justin edition!
-#define MOT_RIGHT 0
+#define MOT_LEFT 3//Link edition!
+#define MOT_RIGHT 1
 #define PI 3.14159265358979
 #define SPD 1000
 #define SPDl 1000.
