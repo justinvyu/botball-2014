@@ -29,11 +29,11 @@
 //#define TOUCH_LEFT
 //#define TOUCH_RIGHT
 
-/* Add In Positions     *
-*	SERVO POSITIONS :   *
-*		TOP				*
-*		BOTTOM  		*
-*						*
+/* Add In Positions    
+*	SERVO POSITIONS :  
+*		TOP				
+*		BOTTOM  		
+*						
 */						
 
 int main()
