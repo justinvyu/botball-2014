@@ -44,7 +44,8 @@ int main()
 		//light_start(L_SENSOR);		// light start
 		next(BOX_DRIVE);
 	}
-	state(BOX_DRIVE){
+	state(BOX_DRIVE)
+	{
 		forward(40.00);				// forward for 40 cm	
 		left(97, ks/2);				// left 90 degrees (97 because the function undershoots)
 		forward(20.00);				// forward 20 cm
