@@ -39,7 +39,8 @@
 int main()
 {
 	currstate = INIT;
-	state(INIT){
+	state(INIT)
+	{
 		//light_start(L_SENSOR);		// light start
 		next(BOX_DRIVE);
 	}
