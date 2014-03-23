@@ -3,6 +3,8 @@
 #include "generic.h"
 #include "drive.h"
 
+//define main if you want to run the main function, define COLOR_TEST if you want to run that program
+// REMEMBER NO MORE THAN ONE MAIN PROGRAM
 //#define MAIN
 #define COLOR_TEST
 /*
