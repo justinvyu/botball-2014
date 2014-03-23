@@ -3,8 +3,6 @@
 #include "generic.h"
 #include "drive.h"
 
-//define main if you want to run the main function, define COLOR_TEST if you want to run that program
-// REMEMBER NO MORE THAN ONE MAIN PROGRAM
 //#define MAIN
 #define COLOR_TEST
 /*
@@ -46,14 +44,7 @@
 void init()
 {
 	//add more stuff if need to do moar
-	camera_open(MED_RES);
-}
-
-int get_object_count_both(int ch1, int ch2){
-	if(get_object_count(ch1) < 1 && get_object_count(ch2) < 1){
-		return 0;
-	}
-	return 1;
+	camera_open(LOW_RES);
 }
 
 #ifdef MAIN
@@ -114,12 +105,12 @@ int main()
 	while(1)
 	{
 		//spin tread until see a tribble
-		while(get_object_count_both(COL_GREEN, COL_PINK) == 0){
+		if(get_object_count(COL_GREEN) < 1 && get_object_count(COL_PINK) < 1)){
 			//mav(MOT_TREAD, 700);
 			//msleep(20);
 			printf("nothing");
 		}
-		if(cam_area(COL_GREEN) > 50) //gets area of blob if present
+		else if(cam_area(COL_GREEN) > 50) //gets area of blob if present
 		{
 			//if green, push into green basket
 			printf("green");
@@ -132,6 +123,7 @@ int main()
 		else
 		{
 			camera_update();
+			msleep(100);
 		}
 	}
 }
