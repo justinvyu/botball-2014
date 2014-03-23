@@ -29,8 +29,8 @@
 //#define TOUCH_LEFT
 //#define TOUCH_RIGHT
 
-/* Add In Positions    
-*	SERVO POSITIONS :  
+/* Add In Positions     
+*	SERVO POSITIONS :   
 *		TOP				
 *		BOTTOM  		
 *						
@@ -48,21 +48,31 @@ int main()
 		left(97, ks/2);				// left 90 degrees (97 because the function undershoots)
 		forward(20.00);				// forward 20 cm
 		//measure to get to box
+		//finish by 3/22/14
 		next(TRIBBLE_ONE);
 	}
-	state(TRIBBLE_ONE){
+	state(TRIBBLE_ONE)
+	{
+		//finish by 3/22/14
 		next(CROSS);
 	}
-	state(CROSS){
+	state(CROSS)
+	{
+		//finish by 3/28/14
 		next(TRIBBLE_TWO);
 	}
-	state(TRIBBLE_TWO){
+	state(TRIBBLE_TWO)
+	{
+		//finish by 3/28/14
 		next(SCORE);
 	}
-	state(SCORE){
+	state(SCORE)
+	{
+		//finish by 3/28/14
 		next(END);
 	}
-	state(END){
+	state(END)
+	{
 		printf("finished");
 		ao();
 	}
