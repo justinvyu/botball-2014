@@ -1,5 +1,6 @@
 // Created on Sat March 22 2014
 
+//generic and drive functions
 #include "generic.h"
 #include "drive.h"
 
@@ -92,10 +93,6 @@ int main()
 	}
 }
 #endif
-
-// Created on Fri March 21 2014
-
-//drive, generic functions
 
 #ifdef COLOR_TEST
 int main()
