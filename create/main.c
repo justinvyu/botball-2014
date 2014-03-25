@@ -1,3 +1,12 @@
+/*------------------------------------------------
+create main function (blocks) by Tommy Yang
+--------------------------------------------------
+Function initializes program, then drives create to
+end of the start box. It then turns 90 degrees right
+and drives to the blocks. It then turns another 90
+degrees left and drives to pick up the blocks.
+-------------------------------------------------*/
+
 #include "create_functions.h"
 #include "createDrive.h"
 #include "generic.h"
@@ -22,7 +31,7 @@ int main()
 	
 	//create turns 90 degrees
 	
-	create_drive_direct_left(250,-250);
+	create_drive_direct_right(250,-250);
 	msleep(750);
 	create_stop();
 	
