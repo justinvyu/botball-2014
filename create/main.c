@@ -6,7 +6,6 @@ end of the start box. It then turns 90 degrees right
 and drives to the blocks. It then turns another 90
 degrees left and drives to pick up the blocks.
 -------------------------------------------------*/
-
 #include "create_functions.h"
 #include "createDrive.h"
 #include "generic.h"
