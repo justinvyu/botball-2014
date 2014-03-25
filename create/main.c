@@ -13,10 +13,14 @@ degrees left and drives to pick up the blocks.
 
 #define OPEN 1500
 #define CLOSED 1200
+#define S_PORT 2
+#define	SLEEP 750
+#define SP_RIGHT 250
+#define SP_LEFT -250
 
 int main()
 {
-	set_servo_position(2,OPEN);
+	set_servo_position(S_PORT,OPEN);
 	enable_servos();
 	create_connect();
 	wait_for_start(0);
@@ -25,16 +29,16 @@ int main()
 	
 	create_forward(500,750);
 	
-	create_drive_direct_right(250,-250);
+	create_drive_direct_right(SP_RIGHT,SP_LEFT);
 	msleep(750);
 	create_stop();
 	
 	create_forward(500,1250);
 	
-	create_drive_direct_left(250,-250);
+	create_drive_direct_left(SP_RIGHT,SP_LEFT);
 	msleep(750);
 	create_stop();
 	
-	create_forward(100,250);
-	set_servo_position(2,CLOSED);    
+	create_forward(100,SP_RIGHT);
+	set_servo_position(S_PORT,CLOSED);    
 }
