@@ -5,12 +5,13 @@
 
 #define MAIN
 //#define COLOR_TEST
+
 /*
 *	TODO:
-*	1. Finish tribbles 3 and 4
-*	2. Cross over
-*	3. Score
-*	4. Ask Lauren for 
+*	1. Test RUN!!!
+*	2. ASK LAUREN FOR CODE
+*	3. 
+*	4. 
 *	
 *	Important Measurements and Positions:
 *	Robot length (wheel guard to front)- 35 cm
