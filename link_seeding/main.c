@@ -21,26 +21,26 @@
 */
 
 //state system
-#define s_INIT 100							// initialize
+#define s_INIT 100								// initialize
 #define s_TRIBBLE_ONE 300						// get the first tribble pile, sort and score
 #define s_TRIBBLE_TWO 200 						// get the second tribble pile
-#define s_CROSS 400							// cross the field
+#define s_CROSS 400								// cross the field
 #define s_TRIBBLE_THREE 500						// get the third tribble pile
 #define s_TRIBBLE_FOUR 800 						// get the fourth tribble pile
 #define s_CROSSOVER 900							// cross back to the other side of the field
-#define s_SCORE 600							// come back and score
-#define s_END 700							// finish
+#define s_SCORE 600								// come back and score
+#define s_END 700								// finish
 
-#define L_SENSOR 0 							// add light sensor port later
+#define L_SENSOR 0 								// add light sensor port later
 
 #define COL_GREEN 0 							// camera channels green/pink
 #define COL_PINK 1
 
-#define S_GATE 0							// gate servo positions
+#define S_GATE 0								// gate servo positions
 #define S_CATCHER 2
 
-#define S_OPEN 213							// servo open/closed positions
-#define s_CLOSE 1760
+#define S_OPEN 213								// servo open/closed positions
+#define S_CLOSE 1760
 
 //  DEFINE THISE 
 
@@ -62,37 +62,37 @@ int main()
 	state(s_INIT)
 	{
 		camera_open(LOW_RES);
-		enable_servos();					// enable servos
+		enable_servos();						// enable servos
 		//light_start(L_SENSOR);				// light start
-		next(s_BOX_DRIVE);
+		next(s_TRIBBLE_ONE);
 	}
 	
 	state(s_TRIBBLE_ONE)
 	{
-		right(47,ks/2);						// left 40 degrees (47 because the function undershoots)
-		set_servo_position(S_GATE,S_OPEN);			// open gate
-		forward(56.00);						// forward 56 cm
-		set_servo_position(s_GATE,S_CLOSE);			// close gate
+		right(47,ks/2);							// left 40 degrees (47 because the function undershoots)
+		set_servo_position(S_GATE,S_OPEN);		// open gate
+		forward(56.00);							// forward 56 cm
+		set_servo_position(S_GATE,S_CLOSE);		// close gate
 		printf("tribble 1 achieved");
 		next(s_TRIBBLE_TWO);
 	}
 	
 	state(s_TRIBBLE_TWO)
 	{
-		left(47,ks/2);						// return to line
-		forward(100.00);					// forward 100 cm
-		set_servo_position(S_GATE,S_OPEN);			// open gate
-		forward(25.00);						// forward 25 cm
-		set_servo_position(S_GATE,S_CLOSE);			// close gate
+		left(47,ks/2);							// return to line
+		forward(100.00);						// forward 100 cm
+		set_servo_position(S_GATE,S_OPEN);		// open gate
+		forward(25.00);							// forward 25 cm
+		set_servo_position(S_GATE,S_CLOSE);		// close gate
 		printf("tribble 2 achieved");
 		next(s_CROSS);
 	}
 	
 	state(s_CROSS)
 	{
-		backward(60.00);					// backward 60 cm to middle of the board 
-		right(97,0);						// right 90 degrees
-		forward(95.00);   					// forward 95 cm to cross the little bridge
+		backward(60.00);						// backward 60 cm to middle of the board 
+		right(97,0);							// right 90 degrees
+		forward(95.00);   						// forward 95 cm to cross the little bridge
 		printf("crossed over to other side");
 		next(s_TRIBBLE_THREE);
 	}
