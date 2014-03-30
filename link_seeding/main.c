@@ -69,7 +69,7 @@ int main()
 	
 	state(s_TRIBBLE_ONE)
 	{
-		right(47,ks/2);							// left 40 degrees (47 because the function undershoots)
+		right(47,ks/2);							// right 40 degrees (47 because the function undershoots)
 		set_servo_position(S_GATE,S_OPEN);		// open gate
 		forward(56.00);							// forward 56 cm
 		set_servo_position(S_GATE,S_CLOSE);		// close gate
@@ -99,9 +99,9 @@ int main()
 	
 	state(s_TRIBBLE_THREE)
 	{
-		right(97,ks/2);
-		forward(60.00);
-		set_servo_position(S_GATE,S_OPEN);
+		right(97,ks/2);							// right 90 degrees
+		forward(60.00);							// forward 60 cm to prepare to get tribble
+		set_servo_position(S_GATE,S_OPEN);		// open gate
 		forward(21.00);
 		set_servo_position(S_GATE,S_CLOSE);
 		printf("tribble 3 achieved");
