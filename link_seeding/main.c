@@ -2,9 +2,11 @@
 
 #include "generic.h"
 #include "drive.h"
+#include "slowservo.h"
 
-#define MAIN
+//#define MAIN
 //#define COLOR_TEST
+#define S_TEST
 
 /*
 *	TODO:
@@ -45,8 +47,8 @@
 #define S_OPEN 200								// servo open/closed positions
 #define S_CLOSE 1760
 
-#define S_UP 213								// servo open/closed positions
-#define S_DOWN 1760
+#define S_UP 1700								// servo open/closed positions
+#define S_DOWN 100
 
 //  DEFINE THISE 
 
@@ -58,7 +60,10 @@
 *	S_GATE POSITIONS :   
 *		OPEN		213		
 *		CLOSED  	1760	
-*						
+*	
+*	S_CATCHER positions :
+*		UP			2047
+*		DOWN		100
 */		
 
 #ifdef MAIN
@@ -187,5 +192,17 @@ int main()
 			msleep(100);
 		}
 	}
+}
+#endif
+
+#ifdef S_TEST
+int main()
+{
+	enable_servo(S_CATCHER);
+	set_servo_position(S_CATCHER,S_DOWN);
+	msleep(1000);
+	set_servo_position(S_CATCHER,S_UP);
+	msleep(1000);
+	disable_servo(S_CATCHER); 
 }
 #endif
