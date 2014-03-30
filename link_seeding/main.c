@@ -32,15 +32,21 @@
 #define s_END 700								// finish
 
 #define L_SENSOR 0 								// add light sensor port later
+#define TOPHAT1 0
+#define TOPHAT2 1
+#define threshold 512							// threshold for tophat sensor
 
 #define COL_GREEN 0 							// camera channels green/pink
 #define COL_PINK 1
 
-#define S_GATE 0								// gate servo positions
+#define S_GATE 1								// gate servo ports
 #define S_CATCHER 2
 
-#define S_OPEN 213								// servo open/closed positions
+#define S_OPEN 200								// servo open/closed positions
 #define S_CLOSE 1760
+
+#define S_UP 213								// servo open/closed positions
+#define S_DOWN 1760
 
 //  DEFINE THISE 
 
@@ -69,10 +75,13 @@ int main()
 	
 	state(s_TRIBBLE_ONE)
 	{
-		right(47,ks/2);							// right 40 degrees (47 because the function undershoots)
+		right(45,ks/2);							// right 40 degrees (47 because the function undershoots)
+		msleep(100);
 		set_servo_position(S_GATE,S_OPEN);		// open gate
 		forward(56.00);							// forward 56 cm
 		set_servo_position(S_GATE,S_CLOSE);		// close gate
+		// add forward until seeing black then white, then turn left until see black
+		
 		printf("tribble 1 achieved");
 		next(s_TRIBBLE_TWO);
 	}
@@ -102,32 +111,32 @@ int main()
 		right(97,ks/2);							// right 90 degrees
 		forward(60.00);							// forward 60 cm to prepare to get tribble
 		set_servo_position(S_GATE,S_OPEN);		// open gate
-		forward(21.00);
-		set_servo_position(S_GATE,S_CLOSE);
+		forward(21.00);							// forward 21 to collect tribbles
+		set_servo_position(S_GATE,S_CLOSE);		// close gate
 		printf("tribble 3 achieved");
 		next(s_TRIBBLE_FOUR);
 	}
 	
 	state(s_TRIBBLE_FOUR)
 	{
-		backward(90.00);
-		right(150,0);
-		set_servo_position(S_GATE,S_OPEN);
-		forward(35.00);
-		set_servo_position(S_GATE,S_CLOSE);
+		backward(90.00);						// backward 90 cm
+		right(150,0);							// right 150 degrees
+		set_servo_position(S_GATE,S_OPEN);		// open gate
+		forward(35.00);							// forward to collect tribbles
+		set_servo_position(S_GATE,S_CLOSE);		// close gate
 		printf("tribble 4 achieved");
 		next(s_CROSSOVER);
 	}
 	
 	state(s_CROSSOVER)
 	{
-		right(230,ks/2);
+		right(230,ks/2);						// turn right to align with line
+		msleep(10);								
+		forward(80.00);							// forward to center of field
+		msleep(20);						
+		left(90,0);								// turn left to crossover
 		msleep(10);
-		forward(80.00);
-		msleep(20);
-		left(90,0);
-		msleep(10);
-		forward(70.00);
+		forward(70.00);							// start going forward to score
 		printf("crossed back our side of the field");
 		next(s_SCORE);
 	}
