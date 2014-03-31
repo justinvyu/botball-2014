@@ -10,10 +10,10 @@
 
 /*
 *	TODO:
-*	1. Test RUN!!!
-*	2. ASK LAUREN FOR CODE
-*	3. 
-*	4. 
+*	1. Start to test run, add in code starting from line 166
+*	2. Ask lauren for help on camera code in S_SCORE
+*	3. After you finish and "round out" the code, please work on main.c in Link_DE
+*	4. Finish link_DE main.c
 *	
 *	Important Measurements and Positions:
 *	Robot length (wheel guard to front)- 35 cm
