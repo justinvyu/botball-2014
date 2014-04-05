@@ -171,7 +171,7 @@ int main()
 	
 	state(s_TRIBBLE_TWO)
 	{
-		left(43,ks/2);							// return to line
+		left(40,ks/2);							// return to line
 		forward_slow(40.00);						// forward 100 cm
 		forward(20.00);
 		set_servo_position(S_GATE,S_OPEN);		// open gate
@@ -191,8 +191,8 @@ int main()
 			bk(MOT_LEFT);
 		}
 		backward(5.00);
-		forward_slow(90.00);					// forward  cm to middle of the board 
-		left(90,ks/2);							// right 90 degrees
+		forward_slow(85.00);					// forward  cm to middle of the board 
+		left(90,ks);							// right 90 degrees
      	forward_slow(55.00);   					// forward 95 cm to cross the little bridge
 		forward(40.00);
 		printf("crossed over to other side\n");
