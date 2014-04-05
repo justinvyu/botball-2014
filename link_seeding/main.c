@@ -6,19 +6,19 @@
 
 #define MAIN
 //#define COLOR_TEST
-//#define TEST
+//#define CAMERA
 
 /*
 *	TODO:
-*	1. Start to test run, add in code starting from line 166
-*	2. Ask lauren for help on camera code in S_SCORE
-*	3. After you finish and "round out" the code, please work on main.c in Link_DE
-*	4. Finish link_DE main.c
+*	1. Test RUN!!!
+*	2. ASK LAUREN FOR CODE
+*	3. 
+*	4. 
 *	
 *	Important Measurements and Positions:
 *	Robot length (wheel guard to front)- 35 cm
 *	Robot width (left to right)- 18 cm
-*	Gate open- 213w
+*	Gate open- 213
 *	Gate close- 1760
 */
 
@@ -36,7 +36,8 @@
 #define L_SENSOR 0 								// add light sensor port later
 #define TOPHAT_LEFT 1
 #define TOPHAT_RIGHT 0
-#define threshold 810							// threshold for tophat sensor
+#define TOUCH_SEN 15
+//#define threshold 810							// threshold for tophat sensor
 #define spd 800
 
 #define COL_GREEN 0 							// camera channels green/pink
@@ -49,6 +50,19 @@
 #define S_CLOSE 1760
 #define S_UP 1700								// servo open/closed positions
 #define S_DOWN 100
+
+//#include "2014_LACT_drive.h"
+
+#define CATCHER 0
+#define HALFWAY 800
+
+#define XCOORDINATE 77
+#define YCOORDINATE 63
+#define THRESHOLD 10
+
+#define HIGH 100
+#define LOW -10
+
 
 //  DEFINE THISE 
 
@@ -74,6 +88,15 @@ void catch()
 	set_servo_position(S_CATCHER,S_UP);
 	msleep(1000);
 	//printf("up");
+}
+
+void f_until_white(int sen)
+{
+	while(analog10(sen)>BLACK_SEN_THRESH)
+	{
+		fd(MOT_RIGHT);
+		fd(MOT_LEFT);
+	}
 }
 
 void f_until_black(int sen)
@@ -122,31 +145,33 @@ int main()
 	currstate = s_INIT;
 	state(s_INIT)
 	{
+		//light_start(L_SENSOR);				// light start
+		shut_down_in(119);
 		camera_open(LOW_RES);
 		enable_servos();						// enable servos
 		set_servo_position(S_CATCHER,S_UP);
 		msleep(500);
 		set_servo_position(S_GATE,S_CLOSE);
 		msleep(500);
-		//light_start(L_SENSOR);				// light start
 		next(s_TRIBBLE_ONE);
 	}
 	
 	state(s_TRIBBLE_ONE)
 	{
-		right(50,ks/2);							// right 40 degrees (47 because the function undershoots)
+		right(45,ks/2);							// right 40 degrees (47 because the function undershoots)
 		msleep(100);
 		set_servo_position(S_GATE,S_OPEN);		// open gate
 		f_until_black(TOPHAT_RIGHT);			// forward until right sensor sees black
 		printf("see black! time to close the gate\n");
 		set_servo_position(S_GATE,S_CLOSE);		// close gate
+		f_until_white(TOPHAT_RIGHT);
 		printf("tribble 1 achieved\n");
 		next(s_TRIBBLE_TWO);
 	}
 	
 	state(s_TRIBBLE_TWO)
 	{
-		left(38,ks/2);							// return to line
+		left(43,ks/2);							// return to line
 		forward_slow(40.00);						// forward 100 cm
 		forward(20.00);
 		set_servo_position(S_GATE,S_OPEN);		// open gate
@@ -158,12 +183,17 @@ int main()
 	
 	state(s_CROSS)
 	{
-		right(180,0);
-		forward(32.00);						// backward 60 cm to middle of the board 
-		left(90,0);							// right 90 degrees
-		//WORKS UP TO HERE
-		//PLEASE TEST AND FIX THE CODE BELOW, USE THE F_UNTIL_BLACK and L_UNTIL_BLACK or R_UNTIL_BLACK FOR CONSTISTENCY
-/*-->*/	forward_slow(55.00);   						// forward 95 cm to cross the little bridge
+		left(180,0);
+		//add a square back, add touch sensor
+		while(digital(TOUCH_SEN) != 1)
+		{
+			bk(MOT_RIGHT);
+			bk(MOT_LEFT);
+		}
+		backward(5.00);
+		forward_slow(90.00);					// forward  cm to middle of the board 
+		left(90,ks/2);							// right 90 degrees
+     	forward_slow(55.00);   					// forward 95 cm to cross the little bridge
 		forward(40.00);
 		printf("crossed over to other side\n");
 		next(s_TRIBBLE_THREE);
@@ -254,10 +284,57 @@ else if(cam_area(COL_GREEN) > 50) //gets area of blob if present
 }
 #endif
 
-#ifdef TEST
-int main()
+#ifdef CAMERA
+
+// Start up the camera and specify the resolution
+enable_servo(S_CATCHER); //enables pickup
+pickup(S_UP);
+camera_open();	
+int x, y, color=0;  // set up for color channel 0 (green)
+int xvalue, yvalue;
+int greencentered = 0;
+while (greencentered == 0)
 {
-	forward(80);
-	msleep(100);
+	camera_update(); // process the most recent image
+	if (get_object_count(color) > 0)
+	{
+		xvalue = get_object_center(color,0).x;
+		yvalue = get_object_center(color,0).y;
+		greencentered = XCOORDINATE-THRESHOLD<xvalue<XCOORDINATE+THRESHOLD && YCOORDINATE-THRESHOLD<yvalue<YCOORDINATE+THRESHOLD;
+		if(greencentered == 1)//get x, y for the biggest blob the channel sees		
+		{	
+			printf("Biggest blob at (%i,%i)\n",x,y);
+			msleep(200);
+			catcher(S_DOWN);
+			sleep(1);
+			forward(0.6);
+			backward(0.6);
+			catcher(S_UP);
+			msleep(200);
+		}
+		else
+		{
+			if(xvalue>87) //moves left if senses value greater than 65
+			{motor(MOT_LEFT,10);}
+			
+			if(xvalue<67) // moves right if senses value less than 55
+			{motor(MOT_RIGHT,10);}
+			
+			if(67<xvalue<87)
+			{
+				if(yvalue<53) //moves forward if senses value greater than 43
+				{
+					motor(MOT_LEFT,10);
+					motor(MOT_RIGHT,10);
+				}
+				
+				if(yvalue>73) // moves backwar if senses value less than 38
+				{
+					motor(MOT_LEFT,-10);
+					motor(MOT_RIGHT,-10);
+				}
+			}
+		}
+	}
 }
 #endif
