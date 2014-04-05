@@ -24,7 +24,56 @@
 #define S_CATCHER 2
 
 #define S_OPEN 213								// servo open/closed positions
+#define S_OPEN_PART 600
 #define s_CLOSE 1760
+
+void f_until_white(int sen)
+{
+	while(analog10(sen)>BLACK_SEN_THRESH)
+	{
+		fd(MOT_RIGHT);
+		fd(MOT_LEFT);
+	}
+}
+void f_until_black(int sen)
+{
+	while(analog10(sen)<BLACK_SEN_THRESH)
+	{
+		fd(MOT_RIGHT);
+		fd(MOT_LEFT);
+	}
+}
+
+void l_until_black(int sen)
+{
+	while(analog10(sen)<BLACK_SEN_THRESH)
+	{
+		mav(MOT_RIGHT,spd);
+		msleep(1);
+	}
+}
+
+void r_until_black(int sen)
+{
+	while(analog10(sen)<BLACK_SEN_THRESH)
+	{
+		mav(MOT_LEFT,spd);
+		msleep(1);
+	}
+}
+
+void forward_slow(int distance)
+{
+	if(distance < 0l){
+		distance = -distance;
+	}
+	long newdist;
+	newdist = distance*CMtoBEMF;//conversion ratio
+	mrp(MOT_RIGHT,500,newdist*rdistmult);
+	mrp(MOT_LEFT,500,newdist);
+	bmd(MOT_RIGHT);
+	bmd(MOT_LEFT);
+}
 
 #ifdef MAIN
 int main()
@@ -39,13 +88,13 @@ int main()
 		set_servo_position(S_GATE,S_CLOSE);
 		msleep(500);
 		//light_start(L_SENSOR);				// light start
-		next(s_BLOCKADE);
-	}
-	
-	state(s_BLOCKADE)
-	{
 		next(s_TRIBBLE_ONE);
 	}
+	
+	/*state(s_BLOCKADE)
+	{
+		next(s_TRIBBLE_ONE);
+	}*/
 	
 	state(s_TRIBBLE_ONE)
 	{
@@ -61,6 +110,14 @@ int main()
 	
 	state(s_BLUE_CUBE) //decide whether or not to do this
 	{
+		f_until_white(TOPHAT_RIGHT);
+		left(33,ks/2);
+		forward_slow(60);
+		forward(20);
+		left(42,ks/2);
+		forward(58);
+		right(42,ks/2);
+		set_servo_position(S_GATE,S_OPEN_PART);
 		next(s_TRIBBLE_TWO);
 	}
 	
