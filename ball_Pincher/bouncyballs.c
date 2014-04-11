@@ -195,7 +195,8 @@ int main ()
 	backward(10);
 	left(50,0);
 	backward(35);
-	linefollow(2,20,100,80);
+	linefollow(1,18,100,80);
+	forward(20);
 	/*left(30,ks/2);							// return to line
 	forward_slow(40);					// forward 100 cm
 	linefollow(0,10,100,80);
