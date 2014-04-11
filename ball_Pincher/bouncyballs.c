@@ -100,24 +100,24 @@ int main ()
 				msleep(300);
 				set_servo_position(CATCHERARM, CATCHER_MIDWAY);
 				msleep(300);
-				set_servo_position(CATCHERARM, CATCHER_DOWN);
-				msleep(300);
+				//set_servo_position(CATCHERARM, CATCHER_DOWN);
+				//msleep(300);
 				currpos=get_servo_position(CATCHERARM);
 				printf("%d\n",currpos);
-				/*if(CATCHER_MIDWAY>=currpos>CATCHER_DOWN)
+				while(CATCHER_MIDWAY>=currpos>CATCHER_DOWN)
 				{	
 				currpos=get_servo_position(CATCHERARM);
 				set_servo_position(CATCHERARM, currpos-INCREMENT);
 				msleep(SLEEP_INCREMENT);
 				currpos=get_servo_position(CATCHERARM);
 				}
-				if(currpos<CATCHER_MIDWAY)
+				while(currpos<CATCHER_MIDWAY)
 				{	
 				currpos=get_servo_position(CATCHERARM);
 				set_servo_position(CATCHERARM, currpos+INCREMENT);
 				msleep(SLEEP_INCREMENT);
 				currpos=get_servo_position(CATCHERARM);
-				}*/
+				}
 				set_servo_position(CATCHERARM,CATCHER_UP);
 				msleep(500);
 			}
