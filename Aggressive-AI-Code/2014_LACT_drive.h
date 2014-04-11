@@ -10,8 +10,8 @@ float tcc=0.95;
 #define PI 3.14159265358979
 #define SPD 1000.
 #define SPDnew 500.
-#define SPDl 1000.
-#define SPDr 1000.
+#define SPDl 950.
+#define SPDr 1300.
 #define rdistmult (SPDr/SPDl)
 
 #define ks 21.//distance from one wheel to another in cm
@@ -24,7 +24,9 @@ float tcc=0.95;
 
 #define drive_off() off(MOT_RIGHT) ;off(MOT_LEFT)
 #define drive(mL,mR) mav(MOT_LEFT,mL);mav(MOT_RIGHT,mR)
-#define gmpc(mot) get_motor_position_counter(mot)
+
+//#define gmpc(mot) get_motor_position_counter(mot)
+#include "generic.h"
 
 #define CATCHERARM 2
 #define CATCHER_DOWN 50
@@ -33,7 +35,7 @@ float tcc=0.95;
 #define HALFWAY 800
 
 
-#define MOT_LEFT 2 //to go left, left motor go back while right motor go forward
+#define MOT_LEFT 0 //to go left, left motor go back while right motor go forward
 #define MOT_RIGHT 3 // identify channel and motors
 #define HIGH 100
 #define LOW -10
@@ -55,7 +57,7 @@ void square_back()
 			bk(MOT_LEFT);//otherwise, approach the wall more
 			_A = 0;
 		}
-		
+
 		if (RBUMP){//if the right sensor is pressed
 			off(MOT_RIGHT);//turn towards wall
 			_B = 1;
@@ -153,8 +155,10 @@ void f_until_black(int sen/*, int othersen*/)
 {
 	while(analog10(sen) /*|| analog10(othersen)*/<BLACK_SEN_THRESH)
 	{
-		motor(MOT_RIGHT,100*tcc);
-		motor(MOT_LEFT,100);
+		/*fd(MOT_RIGHT);
+		fd(MOT_LEFT);*/
+		motor(MOT_RIGHT,100*1.30);
+		motor(MOT_LEFT,100*0.95);
 	}
 	//while(analog10(sen) /*|| analog10(othersen)*/>=BLACK_SEN_THRESH)
 	//{
@@ -191,16 +195,41 @@ void linefollow(int sen, int distance_in_inches, int highspeed, int lowspeed) //
 	{
 		if(analog10(sen)>=BLACK_SEN_THRESH) // if the sensor senses dark
 		{
-			motor(MOT_LEFT,highspeed); //then it will turn left
-			motor(MOT_RIGHT,lowspeed);
+			motor(MOT_LEFT,lowspeed); //then it will turn left
+			motor(MOT_RIGHT,highspeed);
 			msleep(300); //waits for motors to finish
 			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelledmav(3,500); 	// then it will turn right
 		}
 		if(analog10(sen)<BLACK_SEN_THRESH) // if senses white
 		{
-			
-			motor(MOT_RIGHT,highspeed);
-			motor(MOT_LEFT,lowspeed);
+
+			motor(MOT_RIGHT,lowspeed);
+			motor(MOT_LEFT,highspeed);
+			msleep(300); // waits for motors to finish
+			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelled with get motor position counters
+		} 
+	}
+}
+
+void b_linefollow(int sen, int distance_in_inches, int highspeed, int lowspeed) //function to follow line
+{
+	int i=0;
+	int distance= distance_in_inches*250; // turns distance in inches to distance in ticks
+	clear_motor_position_counter(MOT_LEFT); //resets motor position counters
+	clear_motor_position_counter(MOT_RIGHT);
+	while(i<distance) //while the distance has not yet been achieved
+	{
+		if(analog10(sen)>=BLACK_SEN_THRESH) // if the sensor senses dark
+		{
+			motor(MOT_LEFT,-lowspeed); //then it will turn left
+			motor(MOT_RIGHT,-highspeed);
+			msleep(300); //waits for motors to finish
+			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelledmav(3,500); 	// then it will turn right
+		}
+		if(analog10(sen)<BLACK_SEN_THRESH) // if senses white
+		{
+			motor(MOT_LEFT,-highspeed);
+			motor(MOT_RIGHT,-lowspeed);
 			msleep(300); // waits for motors to finish
 			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelled with get motor position counters
 		} 
@@ -224,5 +253,18 @@ void catcher(int position)
 {
 	set_servo_position(2,position);
 	msleep(200);
+}
+
+void slow_servo(int servo, int time_int, int step, int s_pos, int end_pos)
+{
+	int position;
+	printf ("begin");
+
+	for (position = s_pos; position <= end_pos; position -= step)
+	{
+		set_servo_position(servo,position);
+		msleep (time_int);
+		printf ("%d", position);
+	}
 }
 #endif
