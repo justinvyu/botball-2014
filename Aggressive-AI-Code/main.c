@@ -3,6 +3,7 @@
 #include "2014_LACT_drive.h"
 
 #define MAIN
+//#define TEST
 
 #define CATCHERARM 2
 #define CATCHER_DOWN 50
@@ -10,12 +11,10 @@
 #define CATCHER_UP 1700
 #define HALFWAY 800
 
-#define MOT_LEFT 2 //to go left, left motor go back while right motor go forward
-#define MOT_RIGHT 3 // identify channel and motors
 #define HIGH 100
 #define LOW -10
 
-#define L_SENSOR 0 								// add light sensor port later
+#define L_SENSOR 4 								// add light sensor port later
 #define TOPHAT_LEFT 1
 #define TOPHAT_RIGHT 0
 #define TOUCH_SEN 15
@@ -30,10 +29,21 @@
 
 #define S_OPEN 200								// servo open/closed positions
 #define S_CLOSE 1760
+#define S_UP 1700								// servo up/down positions
+#define S_DOWN 100
 #define S_GAP 1450
 
 #define INCREMENT 25 
 #define SLEEP_INCREMENT 100
+
+void touch_back(int sen)
+{
+	while(digital(TOUCH_SEN) == 0)
+	{
+		bk(MOT_RIGHT);
+		bk(MOT_LEFT);
+	}
+}
 
 #ifdef MAIN
 int main()
@@ -52,26 +62,28 @@ int main()
 	int stepsizex;
 	int stepsizey;
 	int currpos;
-	//light_start(L_SENSOR);				// light start
+	
+	light_start(L_SENSOR);				// light start
 	shut_down_in(119);
 	camera_open(LOW_RES);
-	set_servo_position(S_CATCHER,S_UP);
-	msleep(500);
-	set_servo_position(S_GATE,S_CLOSE);
-	msleep(500);
-	set_servo_position(S_GATE,S_OPEN);		// open gate
 	enable_servos();						// enable servos
+	set_servo_position(S_CATCHER,S_DOWN);
+	msleep(500);
+	set_servo_position(S_GATE,S_OPEN);
+	msleep(500);
 	
 	// TRIBBLE PILE 1
 	
-	right(30,ks/2);									// right
-	f_until_black(TOPHAT_RIGHT/*,TOPHAT_LEFT*/);	// forward until right sensor sees black
+	//set_servo_position(S_GATE,S_OPEN);		// open gate
+	msleep(5000);
+	set_servo_position(S_CATCHER,CATCHER_UP);
+	right(28,ks/2);									// right
+	f_until_black(TOPHAT_RIGHT/*,TOPHAT_LEFT*/);	// forward until right sensor sees black]
+	forward(2);
 	//printf("see black! time to close the gate\n");
 	set_servo_position(S_GATE,S_GAP);				// close gate
 	//f_until_white(TOPHAT_RIGHT);
-	printf("tribble 1 achieved\n");	
 	set_servo_position(CATCHERARM, CATCHER_UP);
-	backward(4.0);
 	while (greencentered == 0)
 	{
 		camera_update(); // process the most recent image
@@ -99,6 +111,7 @@ int main()
 				set_servo_position(CATCHERARM, CATCHER_MIDWAY);
 				msleep(300);
 				set_servo_position(CATCHERARM, CATCHER_DOWN);
+				//slow_servo(CATCHERARM,20,40,CATCHER_UP,CATCHER_DOWN);
 				msleep(300);
 				currpos=get_servo_position(CATCHERARM);
 				printf("%d\n",currpos);
@@ -170,20 +183,36 @@ int main()
 		}
 	}
 	set_servo_position(S_GATE,S_CLOSE);	
-	if (analog10(2)>BLACK_SEN_THRESH)
+	while (analog10(2)<BLACK_SEN_THRESH)
 	{
 		motor(MOT_LEFT,-100);
 	}
 	
 	// SCORE PILE 1
 	
-	backward(50);
+	left(5,0);
+	//backward(50);
+	touch_back(TOUCH_SEN);
 	forward(10);
 	backward(10);
 	forward(20);
-	right(50);
-	forward(10);
-	right(50);
+	right(55,0);
+	forward(35);
+	backward(4);
+	right(45,0);
+	while (analog10(3)<BLACK_SEN_THRESH)
+	{
+		motor(MOT_LEFT, 100);
+		motor(MOT_RIGHT, 100);
+	}
+	msleep(10);
+	backward(30);
+	left(42,0);
+	backward(10); 
+	left(50,0);
+	//backward(35);
+	touch_back(TOUCH_SEN);
+	forward(91.00);
 	
 	// BLOCKADE
 	
@@ -200,5 +229,13 @@ int main()
 	// SCORE PILES 3 AND 4
 	
 	// END
+}
+#endif
+
+#ifdef TEST
+int main()
+{
+	forward(40);
+	//f_until_black(TOPHAT_RIGHT);
 }
 #endif
