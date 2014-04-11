@@ -8,12 +8,11 @@ void slow_servo(int time_int, int s_pos, int step, int endpos)
 	int position;
 	printf ("begin");
 	enable_servos();
-	printf ("hi1");
 	
 	for (position = StartPosition; position <= EndPosition; position -= RoboStep)
 	{
 		set_servo_position(2,position);
 		msleep (RoboTimer);
-		printf ("hi%d", position);
+		printf ("%d", position);
 	}
 }
