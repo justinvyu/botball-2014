@@ -8,6 +8,6 @@ link_DE is pretty much link_seeding but you cut the tasks in half. In main.c of 
 
 link_seeding is the one that needs a lot of work. Update your drive.h with the one on github and your main.c on github as well. Work together and keep testrunning the portions that are not working. Ask Lauren for help on the camera code in the S_SCORE section. I did not account for the blue cube in this one, so either decide to score it or push it aside. Also, remember to only have on person commit the final code at the end of the meeting.
 
-Also please remember to add on the light sensors and timers, 2:30 minutes i think, into the code and robot for tournament.
+Also please remember to add on the light sensors and timers, 2:00 minutes i think, into the code and robot for tournament.
 
 Thanks!
