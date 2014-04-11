@@ -134,5 +134,102 @@ void catcher(int position)
 	msleep(200);
 }
 
+void f_until_white(int sen)
+{
+	while(analog10(sen)>BLACK_SEN_THRESH)
+	{
+		fd(MOT_RIGHT);
+		fd(MOT_LEFT);
+	}
+}
+void f_until_black(int sen)
+{
+	while(analog10(sen)<BLACK_SEN_THRESH)
+	{
+		fd(MOT_RIGHT);
+		fd(MOT_LEFT);
+	}
+}
 
+void l_until_black(int sen)
+{
+	while(analog10(sen)<BLACK_SEN_THRESH)
+	{
+		mav(MOT_RIGHT,spd);
+		msleep(1);
+	}
+}
+
+void r_until_black(int sen)
+{
+	while(analog10(sen)<BLACK_SEN_THRESH)
+	{
+		mav(MOT_LEFT,spd);
+		msleep(1);
+	}
+}
+
+void forward_slow(int distance)
+{
+	if(distance < 0l){
+		distance = -distance;
+	}
+	long newdist;
+	newdist = distance*CMtoBEMF;//conversion ratio
+	mrp(MOT_RIGHT,500,newdist*rdistmult);
+	mrp(MOT_LEFT,500,newdist);
+	bmd(MOT_RIGHT);
+	bmd(MOT_LEFT);
+}
+
+void linefollow(int sen, int distance_in_inches, int highspeed, int lowspeed) //function to follow line
+{
+	int i=0;
+	int distance=distance_in_inches*250; // turns distance in inches to distance in ticks
+	clear_motor_position_counter(MOT_LEFT); //resets motor position counters
+	clear_motor_position_counter(MOT_RIGHT);
+	while(i<distance) //while the distance has not yet been achieved
+	{
+		if(analog10(sen)>=BLACK_SEN_THRESH) // if the sensor senses dark
+		{
+			motor(MOT_LEFT,highspeed); //then it will turn left
+			motor(MOT_RIGHT,lowspeed);
+			msleep(300); //waits for motors to finish
+			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelledmav(3,500); 	// then it will turn right
+		}
+		if(analog10(sen)<BLACK_SEN_THRESH) // if senses white
+		{
+			
+			motor(MOT_RIGHT,highspeed);
+			motor(MOT_LEFT,lowspeed);
+			msleep(300); // waits for motors to finish
+			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelled with get motor position counters
+		} 
+	}
+}
+
+void b_linefollow(int sen, int distance_in_inches, int highspeed, int lowspeed) //function to follow line
+{
+	int i=0;
+	int distance= distance_in_inches*250; // turns distance in inches to distance in ticks
+	clear_motor_position_counter(MOT_LEFT); //resets motor position counters
+	clear_motor_position_counter(MOT_RIGHT);
+	while(i<distance) //while the distance has not yet been achieved
+	{
+		if(analog10(sen)>=BLACK_SEN_THRESH) // if the sensor senses dark
+		{
+			motor(MOT_LEFT,-lowspeed); //then it will turn left
+			motor(MOT_RIGHT,-highspeed);
+			msleep(300); //waits for motors to finish
+			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelledmav(3,500); 	// then it will turn right
+		}
+		if(analog10(sen)<BLACK_SEN_THRESH) // if senses white
+		{
+			motor(MOT_LEFT,-highspeed);
+			motor(MOT_RIGHT,-lowspeed);
+			msleep(300); // waits for motors to finish
+			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelled with get motor position counters
+		} 
+	}
+}
 #endif
