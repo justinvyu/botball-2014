@@ -55,7 +55,7 @@ void square_back()
 			bk(MOT_LEFT);//otherwise, approach the wall more
 			_A = 0;
 		}
-		
+
 		if (RBUMP){//if the right sensor is pressed
 			off(MOT_RIGHT);//turn towards wall
 			_B = 1;
@@ -198,9 +198,34 @@ void linefollow(int sen, int distance_in_inches, int highspeed, int lowspeed) //
 		}
 		if(analog10(sen)<BLACK_SEN_THRESH) // if senses white
 		{
-			
+
 			motor(MOT_RIGHT,lowspeed);
 			motor(MOT_LEFT,highspeed);
+			msleep(300); // waits for motors to finish
+			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelled with get motor position counters
+		} 
+	}
+}
+
+void b_linefollow(int sen, int distance_in_inches, int highspeed, int lowspeed) //function to follow line
+{
+	int i=0;
+	int distance= distance_in_inches*250; // turns distance in inches to distance in ticks
+	clear_motor_position_counter(MOT_LEFT); //resets motor position counters
+	clear_motor_position_counter(MOT_RIGHT);
+	while(i<distance) //while the distance has not yet been achieved
+	{
+		if(analog10(sen)>=BLACK_SEN_THRESH) // if the sensor senses dark
+		{
+			motor(MOT_LEFT,-lowspeed); //then it will turn left
+			motor(MOT_RIGHT,-highspeed);
+			msleep(300); //waits for motors to finish
+			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelledmav(3,500); 	// then it will turn right
+		}
+		if(analog10(sen)<BLACK_SEN_THRESH) // if senses white
+		{
+			motor(MOT_LEFT,-highspeed);
+			motor(MOT_RIGHT,-lowspeed);
 			msleep(300); // waits for motors to finish
 			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelled with get motor position counters
 		} 
@@ -225,8 +250,4 @@ void catcher(int position)
 	set_servo_position(2,position);
 	msleep(200);
 }
-
-
-
-
 #endif
