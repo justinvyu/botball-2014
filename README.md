@@ -1,6 +1,6 @@
-botball_team_14-0636
+Pong-
 ====================
-Hello Team 14-0636,
+Hello Pong Nation,
 
 Your tasks on Friday and Saturday is to finish the main.c code in link_seeding and link_DE.
 
