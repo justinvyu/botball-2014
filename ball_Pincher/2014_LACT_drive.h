@@ -4,13 +4,12 @@
 #define _2014_LACT_DRIVE_H_
 
 //primary driving code
-float tcc=1; 
-#define MOT_LEFT 3
-#define MOT_RIGHT 1
+float tcc=0.95; 
 #define MOT_ARM 2
 #define TOUCHSENSOR 15
 #define PI 3.14159265358979
 #define SPD 1000.
+#define SPDnew 500.
 #define SPDl 1000.
 #define SPDr 1000.
 #define rdistmult (SPDr/SPDl)
@@ -26,6 +25,20 @@ float tcc=1;
 #define drive_off() off(MOT_RIGHT) ;off(MOT_LEFT)
 #define drive(mL,mR) mav(MOT_LEFT,mL);mav(MOT_RIGHT,mR)
 #define gmpc(mot) get_motor_position_counter(mot)
+
+#define CATCHERARM 2
+#define CATCHER_DOWN 50
+#define CATCHER_MIDWAY 700
+#define CATCHER_UP 1700
+#define HALFWAY 800
+
+
+#define MOT_LEFT 2 //to go left, left motor go back while right motor go forward
+#define MOT_RIGHT 3 // identify channel and motors
+#define HIGH 100
+#define LOW -10
+
+#define BLACK_SEN_THRESH 300
 void square_back()
 {
 	int _A = 0,_B = 0;
@@ -114,61 +127,6 @@ void backward(float distance){//go backward a number of CM NOT backEMF counts
 	bmd(MOT_RIGHT);
 	bmd(MOT_LEFT);
 }
-
-void armmotor(int power)
-{
-	motor(MOT_ARM, power);
-}
-
-//arm library for LINK
-
-void s_gate(int position)
-{
-	set_servo_position(3,position);
-	msleep(200);
-}
-
-void catcher(int position)
-{
-	set_servo_position(2,position);
-	msleep(200);
-}
-
-void f_until_white(int sen)
-{
-	while(analog10(sen)>BLACK_SEN_THRESH)
-	{
-		fd(MOT_RIGHT);
-		fd(MOT_LEFT);
-	}
-}
-void f_until_black(int sen)
-{
-	while(analog10(sen)<BLACK_SEN_THRESH)
-	{
-		fd(MOT_RIGHT);
-		fd(MOT_LEFT);
-	}
-}
-
-void l_until_black(int sen)
-{
-	while(analog10(sen)<BLACK_SEN_THRESH)
-	{
-		mav(MOT_RIGHT,spd);
-		msleep(1);
-	}
-}
-
-void r_until_black(int sen)
-{
-	while(analog10(sen)<BLACK_SEN_THRESH)
-	{
-		mav(MOT_LEFT,spd);
-		msleep(1);
-	}
-}
-
 void forward_slow(int distance)
 {
 	if(distance < 0l){
@@ -182,6 +140,47 @@ void forward_slow(int distance)
 	bmd(MOT_LEFT);
 }
 
+void f_until_white(int sen)
+{
+	while(analog10(sen)>BLACK_SEN_THRESH)
+	{
+		fd(MOT_RIGHT);
+		fd(MOT_LEFT);
+	}
+}
+
+void f_until_black(int sen/*, int othersen*/)
+{
+	while(analog10(sen) /*|| analog10(othersen)*/<BLACK_SEN_THRESH)
+	{
+		motor(MOT_RIGHT,100*tcc);
+		motor(MOT_LEFT,100);
+	}
+	//while(analog10(sen) /*|| analog10(othersen)*/>=BLACK_SEN_THRESH)
+	//{
+	//	motor(MOT_RIGHT,0);
+	//	motor(MOT_LEFT,0);
+	//}
+}
+
+void l_until_black(int sen)
+{
+	while(analog10(sen)<BLACK_SEN_THRESH)
+	{
+		mav(MOT_RIGHT,SPDnew);
+		msleep(1);
+	}
+}
+
+void r_until_black(int sen)
+{
+	while(analog10(sen)<BLACK_SEN_THRESH)
+	{
+		mav(MOT_LEFT,SPDnew);
+		msleep(1);
+	}
+}
+
 void linefollow(int sen, int distance_in_inches, int highspeed, int lowspeed) //function to follow line
 {
 	int i=0;
@@ -192,44 +191,42 @@ void linefollow(int sen, int distance_in_inches, int highspeed, int lowspeed) //
 	{
 		if(analog10(sen)>=BLACK_SEN_THRESH) // if the sensor senses dark
 		{
-			motor(MOT_LEFT,highspeed); //then it will turn left
-			motor(MOT_RIGHT,lowspeed);
+			motor(MOT_LEFT,lowspeed); //then it will turn left
+			motor(MOT_RIGHT,highspeed);
 			msleep(300); //waits for motors to finish
 			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelledmav(3,500); 	// then it will turn right
 		}
 		if(analog10(sen)<BLACK_SEN_THRESH) // if senses white
 		{
 			
-			motor(MOT_RIGHT,highspeed);
-			motor(MOT_LEFT,lowspeed);
+			motor(MOT_RIGHT,lowspeed);
+			motor(MOT_LEFT,highspeed);
 			msleep(300); // waits for motors to finish
 			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelled with get motor position counters
 		} 
 	}
 }
 
-void b_linefollow(int sen, int distance_in_inches, int highspeed, int lowspeed) //function to follow line
+void armmotor(int power)
 {
-	int i=0;
-	int distance= distance_in_inches*250; // turns distance in inches to distance in ticks
-	clear_motor_position_counter(MOT_LEFT); //resets motor position counters
-	clear_motor_position_counter(MOT_RIGHT);
-	while(i<distance) //while the distance has not yet been achieved
-	{
-		if(analog10(sen)>=BLACK_SEN_THRESH) // if the sensor senses dark
-		{
-			motor(MOT_LEFT,-lowspeed); //then it will turn left
-			motor(MOT_RIGHT,-highspeed);
-			msleep(300); //waits for motors to finish
-			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelledmav(3,500); 	// then it will turn right
-		}
-		if(analog10(sen)<BLACK_SEN_THRESH) // if senses white
-		{
-			motor(MOT_LEFT,-highspeed);
-			motor(MOT_RIGHT,-lowspeed);
-			msleep(300); // waits for motors to finish
-			i=get_motor_position_counter(1)+get_motor_position_counter(3); // updates distance travelled with get motor position counters
-		} 
-	}
+	motor(MOT_ARM, power);
 }
+
+//arm library for LINK
+
+void gate(int position)
+{
+	set_servo_position(3,position);
+	msleep(200);
+}
+
+void catcher(int position)
+{
+	set_servo_position(2,position);
+	msleep(200);
+}
+
+
+
+
 #endif
