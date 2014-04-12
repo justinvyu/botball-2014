@@ -35,7 +35,7 @@ float tcc=0.95;
 #define HALFWAY 800
 
 
-#define MOT_LEFT 0 //to go left, left motor go back while right motor go forward
+#define MOT_LEFT 2 //to go left, left motor go back while right motor go forward
 #define MOT_RIGHT 3 // identify channel and motors
 #define HIGH 100
 #define LOW -10
@@ -157,8 +157,8 @@ void f_until_black(int sen/*, int othersen*/)
 	{
 		/*fd(MOT_RIGHT);
 		fd(MOT_LEFT);*/
-		motor(MOT_RIGHT,100*1.30);
-		motor(MOT_LEFT,100*0.95);
+		motor(MOT_RIGHT,100*0.95);
+		motor(MOT_LEFT,100*1.30);
 	}
 	//while(analog10(sen) /*|| analog10(othersen)*/>=BLACK_SEN_THRESH)
 	//{
