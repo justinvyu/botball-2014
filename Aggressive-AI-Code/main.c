@@ -368,7 +368,7 @@ int main()
 #ifdef TEST
 int main()
 {
-forward(40);
-//f_until_black(TOPHAT_RIGHT);
+	forward(40);
+	//f_until_black(TOPHAT_RIGHT);
 }
 #endif
