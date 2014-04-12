@@ -3,16 +3,15 @@
 #define RoboStep       30
 #define RoboTimer      400
 */
-void slow_servo(int time_int, int s_pos, int step, int endpos)
+void slow_servo(int time_int, int step, int s_pos, int endpos)
 {
 	int position;
 	printf ("begin");
-	enable_servos();
 	
-	for (position = StartPosition; position <= EndPosition; position -= RoboStep)
+	for (position = s_pos; position <= end_pos; position -= step)
 	{
 		set_servo_position(2,position);
-		msleep (RoboTimer);
+		msleep (time_int);
 		printf ("%d", position);
 	}
 }
